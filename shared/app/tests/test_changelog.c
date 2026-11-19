@@ -76,8 +76,8 @@ int main(void)
     expect(1, CHANGELOG_CONTINUED, "bbbb");
 
     /* A word wider than a line is split, never inside a UTF-8 character */
-    assert(layout("- ux0:data/vitals/custom-certs.pem", 100, 100) == 4);
-    expect(0, CHANGELOG_ITEM, "ux0:data/v");
+    assert(layout("- ur0:data/vitals/custom-certs.pem", 100, 100) == 4);
+    expect(0, CHANGELOG_ITEM, "ur0:data/v");
     expect(1, CHANGELOG_CONTINUED, "itals/cust");
     expect(2, CHANGELOG_CONTINUED, "om-certs.p");
     expect(3, CHANGELOG_CONTINUED, "em");

@@ -29,14 +29,14 @@ int vitals_log_write(const char *text, unsigned int length)
 
 #else
 
-#define LOG_DIRECTORY "ux0:data/vitals/logs"
+#define LOG_DIRECTORY "ur0:data/vitals/logs"
 #define LOG_PATH LOG_DIRECTORY "/vitals.log"
 #define LOG_OLD_PATH LOG_PATH ".old"
 /* Room for a burst of Full debug between two passes */
 #define RING_SIZE 0x10000u
 #define CHUNK_SIZE 0x1000u
 #define STEP_MICROSECONDS 250000u
-/* How long ux0: is waited for, in passes: about a minute */
+/* How long ur0: is waited for, in passes: about a minute */
 #define WAIT_STEPS 240u
 
 enum
@@ -121,7 +121,7 @@ int vitals_log_write(const char *text, unsigned int length)
 static void decide(void)
 {
     SceIoStat status;
-    if (ksceIoGetstat("ux0:data", &status) < 0)
+    if (ksceIoGetstat("ur0:data", &status) < 0)
     {
         if (++g_waits >= WAIT_STEPS)
             g_mode = MODE_CONSOLE;

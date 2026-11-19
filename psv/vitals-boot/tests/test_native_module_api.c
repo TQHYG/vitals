@@ -23,7 +23,7 @@ static int fake_shared(SceUID pid, void *address) {
     return 34;
 }
 static SceUID fake_load(SceUID pid, const char *path, int flags, void *options) {
-    assert(pid == 21 && strcmp(path, "ux0:data/vitals/system/ScePsp2Compat.suprx") == 0 && flags == 0 && options == NULL);
+    assert(pid == 21 && strcmp(path, "ur0:data/vitals/system/ScePsp2Compat.suprx") == 0 && flags == 0 && options == NULL);
     return 35;
 }
 int taiGetModuleInfoForKernel(SceUID pid, const char *name, tai_module_info_t *info) {
@@ -56,7 +56,7 @@ static void forwarding(void) {
     assert(vitals_native_module_list(21,0xff,1,modules,&count) == 32);
     assert(vitals_native_module_unload(21,22,0,NULL) == 33);
     assert(vitals_native_module_shared(21,(void *)(uintptr_t)0x81000000) == 34);
-    assert(vitals_native_module_load(21,"ux0:data/vitals/system/ScePsp2Compat.suprx",0,NULL) == 35);
+    assert(vitals_native_module_load(21,"ur0:data/vitals/system/ScePsp2Compat.suprx",0,NULL) == 35);
 }
 int main(void) {
     assert(vitals_native_module_info(0,0,NULL) < 0);
@@ -69,7 +69,7 @@ int main(void) {
         lookup_count = 0; fail_index = 4;
         assert(vitals_native_module_api_init() == 0 && lookup_count == 5);
         assert(vitals_native_module_shared(21,(void *)(uintptr_t)0x81000000) == 34);
-        assert(vitals_native_module_load(21,"ux0:data/vitals/system/ScePsp2Compat.suprx",0,NULL) < 0);
+        assert(vitals_native_module_load(21,"ur0:data/vitals/system/ScePsp2Compat.suprx",0,NULL) < 0);
         for (fail_index = 0; fail_index < 4; ++fail_index) {
             lookup_count = 0;
             assert(vitals_native_module_api_init() < 0);

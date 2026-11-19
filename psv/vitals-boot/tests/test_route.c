@@ -166,7 +166,7 @@ static int finish_start(SceUID pid) {
 
 static void test_startup_failures(void) {
     /* Nothing found yet: the hooks still go in and the browser loader starts, as vitals' modules are
-     * looked for at each load (ux0 may not be mapped yet) */
+     * looked for at each load (ur0 may not be mapped yet) */
     reset_startup();
     stat_result = -1;
     assert(module_start(0, NULL) == SCE_KERNEL_START_SUCCESS);
@@ -220,7 +220,7 @@ static void test_routes(void) {
     assert(installed_load(0, libhttp_paths[0], 0, NULL) == -5);
     assert(finish_start(0) == 0 && injections == 0);
 
-    /* The browser engine from ux0:data/vitals/system, then vitals' provider from there too */
+    /* The browser engine from ur0:data/vitals/system, then vitals' provider from there too */
     reset();
     assert(installed_load(0, "wb0:/webcore/ScePsp2Compat.suprx", 0x8001, &options) == 88);
     assert(strcmp(selected_path, g_replacement_modules[MODULE_COMPAT]) == 0 && seen_flags == 0x8001);
@@ -235,7 +235,7 @@ static void test_routes(void) {
     assert(strcmp(selected_path, "wb0:/webcore/ScePsp2Compat.suprx") == 0);
     assert(finish_start(0) == 0 && injections == 0);
     stat_result = 0;
-    /* The process's own load can't reach ux0 (the browser's), but the kernel's own load can: vitals'
+    /* The process's own load can't reach ur0 (the browser's), but the kernel's own load can: vitals'
      * engine, and the provider follows */
     reset();
     current_pid = 99;
@@ -315,8 +315,8 @@ static void test_routes(void) {
     assert(strcmp(selected_path, g_replacement_modules[MODULE_LIBHTTP]) == 0);
 
     reset();
-    assert(installed_load(0, "ux0:/unrelated.suprx", 0x8001, NULL) == 88);
-    assert(strcmp(selected_path, "ux0:/unrelated.suprx") == 0 && seen_flags == 0x8001);
+    assert(installed_load(0, "ur0:/unrelated.suprx", 0x8001, NULL) == 88);
+    assert(strcmp(selected_path, "ur0:/unrelated.suprx") == 0 && seen_flags == 0x8001);
     assert(finish_start(0) == 0 && injections == 0);
     puts("kernel module route: redirection, the TLS and HTTP switches, and post-start injection for current and explicit PIDs PASS");
 }

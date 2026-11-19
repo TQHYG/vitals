@@ -17,7 +17,7 @@
 
 /* Hooks the kernel's send and receive; the send hook's result, negative when it could not be
  * installed (without the receive hook, queries are only logged) */
-#define VITALS_DNS_LIST_PATH "ux0:data/vitals/dns.txt"
+#define VITALS_DNS_LIST_PATH "ur0:data/vitals/dns.txt"
 
 SceUID vitals_dns_watch_start(void);
 void vitals_dns_watch_stop(void);

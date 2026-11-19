@@ -26,12 +26,12 @@ int main(void) {
     for (unsigned i = 0; i < CHECK_TEST_COUNT; ++i) assert(strstr(check_endpoint(i), "playstation") == NULL);
     assert(check_endpoint(CHECK_TEST_COUNT) == NULL);
 
-    /* vitals' libhttp is the one loaded when SceLibHttp has started from ux0:data/vitals/system,
+    /* vitals' libhttp is the one loaded when SceLibHttp has started from ur0:data/vitals/system,
      * named with or without the slash; not from an earlier version's place, nor Sony's */
-    assert(check_http_module_active("SceLibHttp", "ux0:data/vitals/system/libhttp.suprx", 6));
-    assert(check_http_module_active("SceLibHttp", "ux0:/data/vitals/system/libhttp.suprx", 6));
-    assert(!check_http_module_active("SceLibHttp", "ux0:data/vitals/system/libhttp.suprx", 5));
-    assert(!check_http_module_active("SceLibSsl", "ux0:data/vitals/system/libhttp.suprx", 6));
+    assert(check_http_module_active("SceLibHttp", "ur0:data/vitals/system/libhttp.suprx", 6));
+    assert(check_http_module_active("SceLibHttp", "ur0:/data/vitals/system/libhttp.suprx", 6));
+    assert(!check_http_module_active("SceLibHttp", "ur0:data/vitals/system/libhttp.suprx", 5));
+    assert(!check_http_module_active("SceLibSsl", "ur0:data/vitals/system/libhttp.suprx", 6));
     assert(!check_http_module_active("SceLibHttp", "vs0:/data/external/vitals/libhttp.suprx", 6));
     assert(!check_http_module_active("SceLibHttp", "vs0:sys/external/libhttp.suprx", 6));
     assert(!check_http_module_active("SceLibHttp", "uma0:data/vitals/system/libhttp.suprx", 6));
@@ -73,11 +73,11 @@ int main(void) {
     r = outcome((int)0x80431063, 0, 0);
     check_badssl_judge(expired, &r);
     assert(r.state == CHECK_FAIL && strncmp(r.message, "Inconclusive", 12) == 0);
-    /* vitals-ssl is the loaded libssl when SceLibSsl started from ux0:data/vitals/system */
-    assert(check_ssl_module_active("SceLibSsl", "ux0:data/vitals/system/libssl.suprx", 6));
+    /* vitals-ssl is the loaded libssl when SceLibSsl started from ur0:data/vitals/system */
+    assert(check_ssl_module_active("SceLibSsl", "ur0:data/vitals/system/libssl.suprx", 6));
     assert(!check_ssl_module_active("SceLibSsl", "vs0:sys/external/libssl.suprx", 6));
-    assert(!check_ssl_module_active("SceLibHttp", "ux0:data/vitals/system/libssl.suprx", 6));
-    assert(!check_ssl_module_active("SceLibSsl", "ux0:data/vitals/system/libssl.suprx", 5));
+    assert(!check_ssl_module_active("SceLibHttp", "ur0:data/vitals/system/libssl.suprx", 6));
+    assert(!check_ssl_module_active("SceLibSsl", "ur0:data/vitals/system/libssl.suprx", 5));
 
     /* TLS 1.0 and 1.1 refused by vitals: with vitals-http, by its detail */
     r = outcome((int)0x80431075, (int)0x80435061, 0);

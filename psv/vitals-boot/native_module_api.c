@@ -52,7 +52,7 @@ int vitals_native_module_api_init(void) {
     unload_module = (int (*)(SceUID, SceUID, int, const void *))addresses[2];
     is_shared = (int (*)(SceUID, void *))addresses[3];
     /* ksceKernelLoadModuleForPid, which isn't needed to start: without it, only the browser engine's
-     * load from ux0 goes without its last try (vitals-headers' db/360 and db/363) */
+     * load from ur0 goes without its last try (vitals-headers' db/360 and db/363) */
     static const uint32_t load_nids[VITALS_KERNEL_FAMILY_COUNT] = {
         [VITALS_KERNEL_FAMILY_360] = UINT32_C(0xfa21d8cb),
         [VITALS_KERNEL_FAMILY_365] = UINT32_C(0x4e85022d),

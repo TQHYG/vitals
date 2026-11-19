@@ -58,10 +58,10 @@ int main(void)
     assert(found.count == 1 && strcmp(found.paths[0], "ur0:tai/reAuth.skprx") == 0);
 
     /* Any location and case, surrounding spaces, a last line without '\n', several entries */
-    config = "*KERNEL\n  ux0:tai/REAUTH.SKPRX \nur0:tai/plugins/reauth.skprx";
+    config = "*KERNEL\n  ur0:tai/REAUTH.SKPRX \nur0:tai/plugins/reauth.skprx";
     assert(run(config, output, &size, &found) == 2);
     assert(strcmp(output, "*KERNEL\n") == 0);
-    assert(found.count == 2 && strcmp(found.paths[0], "ux0:tai/REAUTH.SKPRX") == 0 &&
+    assert(found.count == 2 && strcmp(found.paths[0], "ur0:tai/REAUTH.SKPRX") == 0 &&
            strcmp(found.paths[1], "ur0:tai/plugins/reauth.skprx") == 0);
     config = "*KERNEL\nur0:reAuth.skprx\n";
     assert(run(config, output, &size, &found) == 1 && strcmp(found.paths[0], "ur0:reAuth.skprx") == 0);
@@ -98,7 +98,7 @@ int main(void)
     assert(!HAS("*main\nur0:tai/vitals.skprx\n"));
     assert(!HAS("*KERNEL\nur0:tai/a.skprx\n*NPXS10015\nur0:tai/vitals.skprx\n"));
     assert(!HAS("ur0:tai/vitals.skprx\n*KERNEL\n"));
-    assert(!HAS("*KERNEL\nux0:tai/vitals.skprx\n"));
+    assert(!HAS("*KERNEL\nur0:tai/vitals.skprx\n"));
     assert(!HAS("*KERNEL\nur0:tai/vitals.skprx.bak\nur0:tai/old_vitals.skprx\n"));
     assert(!HAS("*KERNELS\nur0:tai/vitals.skprx\n"));
     assert(!HAS(""));

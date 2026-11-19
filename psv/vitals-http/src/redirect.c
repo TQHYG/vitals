@@ -6,8 +6,8 @@
 
 #include <string.h>
 
-/* The host redirect list (ux0:data/vitals/redirects.txt), as the HTTP provider applied it: read
- * through the kernel plugin, since games can't open ux0:data, and applied to the host names
+/* The host redirect list (ur0:data/vitals/redirects.txt), as the HTTP provider applied it: read
+ * through the kernel plugin, since games can't open ur0:data, and applied to the host names
  * connections and URL requests are made with. Read once per sceHttpInit, into the pool's memory
  * but outside its accounting: apps wait for an empty pool, as Sony's is once all is deleted */
 

@@ -12,7 +12,7 @@
 #include <unistd.h>
 #include <zlib.h>
 
-#define MODULE "ux0:module.suprx"
+#define MODULE "ur0:module.suprx"
 #define ELF_OFFSET 0x100u
 #define SEGMENT_INFO_OFFSET 0x200u
 #define SEGMENT_OFFSET 0x300u
@@ -83,9 +83,9 @@ int main(void)
     snprintf(root, sizeof(root), "%s/vitals-module-version-XXXXXX", getenv("TMPDIR") ? getenv("TMPDIR") : "/tmp");
     assert(mkdtemp(root) != NULL);
     vita_files_root(root);
-    char ux0[1100];
-    snprintf(ux0, sizeof(ux0), "%s/ux0", root);
-    assert(mkdir(ux0, 0700) == 0);
+    char ur0[1100];
+    snprintf(ur0, sizeof(ur0), "%s/ur0", root);
+    assert(mkdir(ur0, 0700) == 0);
     unsigned major, minor;
 
     /* No module file */
@@ -111,7 +111,7 @@ int main(void)
         }
     }
 
-    assert(unlink(vita_files_path(MODULE)) == 0 && rmdir(ux0) == 0 && rmdir(root) == 0);
+    assert(unlink(vita_files_path(MODULE)) == 0 && rmdir(ur0) == 0 && rmdir(root) == 0);
     puts("module version: compressed and plain modules, damaged and missing files PASS");
     return 0;
 }

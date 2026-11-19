@@ -172,7 +172,7 @@ void vitals_reboot(void)
 
 /* ---- the switches ---- */
 
-/* Each one's .off in ux0:data/vitals/flags, the PS3's four (vitals/switches.h), which the app writes
+/* Each one's .off in ur0:data/vitals/flags, the PS3's four (vitals/switches.h), which the app writes
  * and deletes and the kernel plugin reads */
 static const ConsoleSwitchState tls_states[] = {
     {"On", "vitals TLS enabled", CONSOLE_TONE_USUAL, 0},

@@ -11,14 +11,14 @@
  * The code comes from the vitals installer; progress messages are reported one line at a
  * time through a callback (console.h's VitalsNote) */
 
-/* vitals' certificate store (vitals/ca_store.h), in ux0:data/vitals/system: Sony's list, then
+/* vitals' certificate store (vitals/ca_store.h), in ur0:data/vitals/system: Sony's list, then
  * Mozilla's certificates it lacks, which a certificate update rewrites, then the user's own */
 #include "vitals/ca_store.h"
 
 /* 1 on firmware 3.60 or 3.65; otherwise 0, with the detected firmware described in description */
 int vitals_install_firmware_supported(char *description, size_t size);
 /* 1 when an earlier version's modules are where it kept them (vs0, ur0:tai/vitals-native) rather than
- * in ux0:data/vitals/system, or its bundle is still the system's certificate store (CA_LIST.cer_old
+ * in ur0:data/vitals/system, or its bundle is still the system's certificate store (CA_LIST.cer_old
  * beside it): an update moves them and puts the system's own store back */
 int vitals_install_old_layout(void);
 /* 1 when the plugin, every module and the certificates are installed */

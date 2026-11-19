@@ -21,7 +21,7 @@ and its pool's stats; the NetCheck dialog does its own TLS).
 
 | Module                    | File loaded                                                                           | Loaded when                   | Into                                                              | Shared or private | Until                                         |
 | ------------------------- | ------------------------------------------------------------------------------------- | ----------------------------- | ----------------------------------------------------------------- | ----------------- | --------------------------------------------- |
-| `SceLibSsl` (vitals-ssl)  | `ux0:data/vitals/system/libssl.suprx`, in place of `vs0:sys/external/libssl.suprx` | a process loads Sony's libssl | every process that loads it, mapped once (at `0xE…` in your logs) | always **shared** | the last process using it unloads it or exits |
+| `SceLibSsl` (vitals-ssl)  | `ur0:data/vitals/system/libssl.suprx`, in place of `vs0:sys/external/libssl.suprx` | a process loads Sony's libssl | every process that loads it, mapped once (at `0xE…` in your logs) | always **shared** | the last process using it unloads it or exits |
 
 Nothing is injected after it, and nothing hooks it.
 
@@ -29,7 +29,7 @@ Nothing is injected after it, and nothing hooks it.
 
 | File on the console                      | Comes from                                                                          | Installed by                                                   |
 | ---------------------------------------- | ----------------------------------------------------------------------------------- | -------------------------------------------------------------- |
-| `ux0:data/vitals/system/libssl.suprx` | `app0:libssl.suprx` (`build/vitals-ssl/libssl.suprx`), or `app0:debug/<level>/libssl.suprx` for Debug output | `install_http_modules` and the debug level switch in [install.c](../vitals-app/install.c) |
+| `ur0:data/vitals/system/libssl.suprx` | `app0:libssl.suprx` (`build/vitals-ssl/libssl.suprx`), or `app0:debug/<level>/libssl.suprx` for Debug output | `install_http_modules` and the debug level switch in [install.c](../vitals-app/install.c) |
 
 Sony's own `vs0:sys/external/libssl.suprx` is never modified; the replacement happens at load
 time. Uninstalling removes vitals' copy with the HTTP modules. Earlier versions installed a copy of
@@ -39,7 +39,7 @@ reference vitals-ssl was written from).
 ## 2. Boot
 
 The kernel plugin's hooks go in at boot, whatever is installed. vitals' libhttp and libssl are in
-`ux0:data/vitals/system`, which may not be ready when the plugin starts (a plugin loaded after it maps
+`ur0:data/vitals/system`, which may not be ready when the plugin starts (a plugin loaded after it maps
 an SD2Vita's card), so they're looked for at each load of Sony's libhttp or libssl (`replace_iap` in
 [vitals-boot/main.c](../vitals-boot/main.c)): the swap happens only when **both** are there, and
 otherwise Sony's load. The Options' switches are looked for at the same loads
@@ -55,7 +55,7 @@ as if `redirects.txt` were missing.
 Like every load, it reaches `load_for_pid_patched` ([main.c](../vitals-boot/main.c)):
 
 1. **Path swap**: `vs0:sys/external/libssl.suprx` or `vs0:/sys/external/libssl.suprx` becomes
-   `ux0:data/vitals/system/libssl.suprx`.
+   `ur0:data/vitals/system/libssl.suprx`.
 2. **Flags left alone**: the loader's shared mapping is kept, as for every replacement.
 3. **The real load**: vitals-ssl is mapped in the **shared** region, one copy of its code for every
    process that uses it, each process with its own data.
@@ -67,11 +67,11 @@ three files read as one, in this order, each followed by a line break
 
 | File                                        | What                                                      | Written by                                 |
 | ------------------------------------------- | --------------------------------------------------------- | ------------------------------------------ |
-| `ux0:data/vitals/system/sony-certs.pem`     | Sony's list from firmware 3.74, byte for byte              | the installer, from the app's copy         |
-| `ux0:data/vitals/system/mozilla-certs.pem`  | the Mozilla certificates Sony's list lacks                 | the installer and **Update certificates** |
-| `ux0:data/vitals/custom-certs.pem`          | the user's own, optional                                   | the user                                   |
+| `ur0:data/vitals/system/sony-certs.pem`     | Sony's list from firmware 3.74, byte for byte              | the installer, from the app's copy         |
+| `ur0:data/vitals/system/mozilla-certs.pem`  | the Mozilla certificates Sony's list lacks                 | the installer and **Update certificates** |
+| `ur0:data/vitals/custom-certs.pem`          | the user's own, optional                                   | the user                                   |
 
-No app or game may open `ux0:data` itself, so vitals-ssl reads the store through the kernel
+No app or game may open `ur0:data` itself, so vitals-ssl reads the store through the kernel
 plugin's system call `vitals_ca_read` ([redirects.c](../vitals-boot/redirects.c)), which copies a
 piece of it from an offset into the caller's memory, at most 64 KiB at a time. It takes each file's
 size at every call: Sony's must be there; the others add nothing when missing or empty. The store's

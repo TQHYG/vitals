@@ -7,7 +7,7 @@ VITA_TOOLCHAIN = $(VITASDK)/share/vita.toolchain.cmake
 # The heap (KiB) per process for what TLS keeps here, apart from the pools the app gives sceHttpInit
 # and sceSslInit
 TLS_HEAP_KIB ?= 64
-# What follows an app's own User-Agent, unless ux0:data/vitals/useragent.txt gives another
+# What follows an app's own User-Agent, unless ur0:data/vitals/useragent.txt gives another
 USER_AGENT ?= libhttp/3.74 (PS Vita)
 # Debug output on the Vita's debug console: 0 none, 1 connections and failures, 2 every TLS step
 DEBUG ?= 0

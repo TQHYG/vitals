@@ -12,13 +12,13 @@ connections and requests live in it. HTTPS goes through the libssl module
 ([vitals-ssl](../vitals-ssl/)), as Sony's libhttp's does, in the pool the app gives `sceSslInit`; each connection then does its TLS 1.2 or 1.3 handshake on a worker thread, checks the
 server against the installed certificate store, and stays open for the next request when the
 server allows it. The host redirect list and the User-Agent suffix are read through the kernel
-plugin, since games can't open `ux0:data` themselves.
+plugin, since games can't open `ur0:data` themselves.
 
 ## At a glance
 
 | Module                     | File loaded                                                                             | Loaded when                    | Into                                                           | Shared or private | Until                                         |
 | -------------------------- | --------------------------------------------------------------------------------------- | ------------------------------ | -------------------------------------------------------------- | ----------------- | --------------------------------------------- |
-| `SceLibHttp` (vitals-http) | `ux0:data/vitals/system/libhttp.suprx`, in place of `vs0:sys/external/libhttp.suprx` | a process loads Sony's libhttp | every process that loads it, mapped once, as Sony's library is | always **shared** | the last process using it unloads it or exits |
+| `SceLibHttp` (vitals-http) | `ur0:data/vitals/system/libhttp.suprx`, in place of `vs0:sys/external/libhttp.suprx` | a process loads Sony's libhttp | every process that loads it, mapped once, as Sony's library is | always **shared** | the last process using it unloads it or exits |
 
 | Memory                            | Taken when                           | Size                                                             | Freed            |
 | --------------------------------- | ------------------------------------ | ---------------------------------------------------------------- | ---------------- |
@@ -29,19 +29,19 @@ plugin, since games can't open `ux0:data` themselves.
 
 | File on the console                       | Comes from                                                        | Installed by                                                   |
 | ----------------------------------------- | ----------------------------------------------------------------- | -------------------------------------------------------------- |
-| `ux0:data/vitals/system/libhttp.suprx` | built from [vitals-http/](../vitals-http/)                        | `install_http_modules` in [install.c](../vitals-app/install.c) |
-| `ux0:data/vitals/system/libssl.suprx`  | built from [vitals-ssl/](../vitals-ssl/), see [libssl.md](libssl.md) | same function                                                  |
-| `ux0:data/vitals/system/sony-certs.pem`   | the certificate store's first part: Sony's 3.74 list, as shipped  | `install_certificates`                                         |
-| `ux0:data/vitals/system/mozilla-certs.pem`| its second: the Mozilla certificates Sony's list lacks            | same function                                                  |
-| `ux0:data/vitals/custom-certs.pem`        | its third: your own certificates, optional                        | you                                                            |
-| `ux0:data/vitals/redirects.txt`           | the host redirect list, created once with examples                | the installer; never overwritten                               |
-| `ux0:data/vitals/useragent.txt`           | the User-Agent suffix, optional                                   | you                                                            |
+| `ur0:data/vitals/system/libhttp.suprx` | built from [vitals-http/](../vitals-http/)                        | `install_http_modules` in [install.c](../vitals-app/install.c) |
+| `ur0:data/vitals/system/libssl.suprx`  | built from [vitals-ssl/](../vitals-ssl/), see [libssl.md](libssl.md) | same function                                                  |
+| `ur0:data/vitals/system/sony-certs.pem`   | the certificate store's first part: Sony's 3.74 list, as shipped  | `install_certificates`                                         |
+| `ur0:data/vitals/system/mozilla-certs.pem`| its second: the Mozilla certificates Sony's list lacks            | same function                                                  |
+| `ur0:data/vitals/custom-certs.pem`        | its third: your own certificates, optional                        | you                                                            |
+| `ur0:data/vitals/redirects.txt`           | the host redirect list, created once with examples                | the installer; never overwritten                               |
+| `ur0:data/vitals/useragent.txt`           | the User-Agent suffix, optional                                   | you                                                            |
 
 Sony's own `vs0:sys/external/libhttp.suprx` is never modified. Installing also removes what earlier
 versions used in its place: the old HTTP provider and reAuth's module.
 
 The certificate store is vitals' own: libssl reads its three files as one through the kernel plugin
-(`vitals_ca_read`, see [libssl.md](libssl.md)), as no app may open `ux0:data`. Earlier versions wrote it over the system's
+(`vitals_ca_read`, see [libssl.md](libssl.md)), as no app may open `ur0:data`. Earlier versions wrote it over the system's
 `vs0:/data/external/cert/CA_LIST.cer`, keeping what was there as `CA_LIST.cer_old`; installing,
 updating the certificates and uninstalling put that file back as it is, and the system's store is
 never written again.
@@ -49,7 +49,7 @@ never written again.
 ## 2. Boot
 
 The kernel plugin's hooks go in at boot, whatever is installed. vitals' libhttp and libssl are in
-`ux0:data/vitals/system`, which may not be ready when the plugin starts (a plugin loaded after it maps
+`ur0:data/vitals/system`, which may not be ready when the plugin starts (a plugin loaded after it maps
 an SD2Vita's card), so they're looked for at each load of Sony's libhttp or libssl (`replace_iap` in
 [vitals-boot/main.c](../vitals-boot/main.c)): the swap happens only when **both** are there, and
 otherwise Sony's load. The Options' switches are looked for at the same loads
@@ -65,7 +65,7 @@ as if `redirects.txt` were missing.
 Like every load, it reaches `load_for_pid_patched` ([main.c](../vitals-boot/main.c)):
 
 1. **Path swap:** `vs0:sys/external/libhttp.suprx`, `vs0:/sys/external/libhttp.suprx` and reAuth's
-   `ur0:data/reAuth/libhttp.suprx` all become `ux0:data/vitals/system/libhttp.suprx`. The load is
+   `ur0:data/reAuth/libhttp.suprx` all become `ur0:data/vitals/system/libhttp.suprx`. The load is
    logged as `vitals-boot: libhttp load pid=… path=…`.
 2. **Flags left alone:** the loader's shared mapping is kept, so one copy of the code serves every
    process, each with its own data, exactly as with Sony's library.
@@ -260,7 +260,7 @@ app's **Debug output** option.
 | [vitals-http/src/message.c](../vitals-http/src/message.c)                                                  | the request text and response parsing                      |
 | [vitals-http/src/tls.c](../vitals-http/src/tls.c)                                                          | TLS, trust and `sceHttpsLoadCert`                          |
 | [vitals-http/src/async.c](../vitals-http/src/async.c)                                                      | non-blocking calls and the epoll                           |
-| [vitals-http/src/redirect.c](../vitals-http/src/redirect.c), [useragent.c](../vitals-http/src/useragent.c) | the two lists from `ux0:data/vitals/`                      |
+| [vitals-http/src/redirect.c](../vitals-http/src/redirect.c), [useragent.c](../vitals-http/src/useragent.c) | the two lists from `ur0:data/vitals/`                      |
 | [vitals-ssl/src/ca_index.c](../vitals-ssl/src/ca_index.c)                                        | the certificate store's index                              |
 | [shared/src/ca_scan.c](../../shared/src/ca_scan.c)                                                          | the store's certificate blocks, for the index (the PS3's too) |
 | [common/src/error_map.c](../common/src/error_map.c)                                                | TLS outcomes to Sony's error codes                         |

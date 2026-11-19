@@ -17,7 +17,7 @@ if(NOT VITALS_HTTP_TLS_HEAP_KIB MATCHES "^[0-9]+$" OR VITALS_HTTP_TLS_HEAP_KIB L
 endif()
 math(EXPR VITALS_HTTP_TLS_HEAP_BYTES "${VITALS_HTTP_TLS_HEAP_KIB} * 1024")
 
-# What follows an app's own User-Agent unless ux0:data/vitals/useragent.txt gives another: printable
+# What follows an app's own User-Agent unless ur0:data/vitals/useragent.txt gives another: printable
 # ASCII without the characters that would break the C string or the build's quoting
 set(VITALS_HTTP_USER_AGENT "libhttp/3.74 (PS Vita)" CACHE STRING "User-Agent suffix after the app's own")
 string(LENGTH "${VITALS_HTTP_USER_AGENT}" VITALS_HTTP_USER_AGENT_LENGTH)

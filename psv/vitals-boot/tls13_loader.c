@@ -263,7 +263,7 @@ int vitals_kernel_loader_init(void)
     g_injection_mutex = ksceKernelCreateMutex("vitals inject", 0, 0, NULL);
     if (g_injection_mutex < 0)
         return g_injection_mutex;
-    /* The provider is on ux0, which may not be mapped yet when this plugin starts (an SD2Vita's):
+    /* The provider is on ur0, which may not be mapped yet when this plugin starts (an SD2Vita's):
      * when it isn't found now, vitals_kernel_browser_loader_ready looks again at each engine load */
     ready = target_matches(&g_browser_target, 0);
     return ready ? 0 : -1;
@@ -304,7 +304,7 @@ static int inject_target(SceUID pid, SceUID module_id, const char *provider_path
     int result;
     size_t slot = sizeof(in_flight) / sizeof(in_flight[0]);
 
-    /* Only vitals' own provider, from ux0:data/vitals/system */
+    /* Only vitals' own provider, from ur0:data/vitals/system */
     if (!ready || g_injection_mutex < 0 || pid <= 0 || module_id < 0 || provider_path == NULL ||
         strcmp(provider_path, file_path) != 0)
     {
@@ -359,7 +359,7 @@ static int inject_target(SceUID pid, SceUID module_id, const char *provider_path
         result = 0;
         goto cleanup;
     }
-    /* Both from ux0:data/vitals/system, in the system's view, not the process's: the engine
+    /* Both from ur0:data/vitals/system, in the system's view, not the process's: the engine
      * there is the one whose layout the provider hooks */
     result = -1;
     if (!target_matches(target, 0))

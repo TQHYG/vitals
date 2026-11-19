@@ -55,8 +55,8 @@ static const char vitals_config_block[] =
  * the user moved it */
 static const char vitals_plugin_path[] = "ur0:tai/vitals.skprx";
 static const char vitals_plugin_name[] = "vitals.skprx";
-static const char redirect_list[] = "ux0:data/vitals/redirects.txt";
-static const char dns_list[] = "ux0:data/vitals/dns.txt";
+static const char redirect_list[] = "ur0:data/vitals/redirects.txt";
+static const char dns_list[] = "ur0:data/vitals/dns.txt";
 
 enum
 {
@@ -68,7 +68,7 @@ enum
     MODULE_OLD_REAUTH,
 };
 
-/* vitals' modules, all in ux0:data/vitals/system (vitals/path.h) */
+/* vitals' modules, all in ur0:data/vitals/system (vitals/path.h) */
 static const char *const new_modules[] = {
     [MODULE_COMPAT] = VITALS_COMPAT_PATH,
     /* vitals-http, which does its own TLS */
@@ -81,7 +81,7 @@ static const char *const new_modules[] = {
     [MODULE_OLD_REAUTH] = "vs0:/data/external/vitals/native/vitals-reauth.suprx",
 };
 
-/* Where earlier versions kept the modules that are in ux0:data/vitals/system now: libhttp, libssl and
+/* Where earlier versions kept the modules that are in ur0:data/vitals/system now: libhttp, libssl and
  * the browser engine on vs0, and the browser provider twice, the kernel plugin's copy in ur0:tai and a
  * second on vs0. Every install and uninstall takes them out, and their folders when empty */
 static const char *const old_layout[] = {
@@ -124,12 +124,12 @@ static int remove_old_layout(void)
     return result;
 }
 
-/* ux0:data/vitals/system, and ux0:data/vitals above it */
+/* ur0:data/vitals/system, and ur0:data/vitals above it */
 static int make_system_directory(void)
 {
     if (path_exists(VITALS_SYSTEM_DIRECTORY))
         return 0;
-    (void)sceIoMkdir("ux0:data/vitals", 0777);
+    (void)sceIoMkdir("ur0:data/vitals", 0777);
     return sceIoMkdir(VITALS_SYSTEM_DIRECTORY, 0777);
 }
 
@@ -867,7 +867,7 @@ static int install_plugin(int requested_state)
     {
         return result;
     }
-    (void)remove_if_exists("ux0:tai/config_previtals.txt");
+    (void)remove_if_exists("ur0:tai/config_previtals.txt");
     result = install_plugin_config();
     if (result < 0 && !had_previous)
     {
@@ -968,14 +968,14 @@ static int install_http_modules(int requested_state)
         /* A starter host redirect list; an existing one is the user's and is never replaced */
         if (result >= 0 && !path_exists(redirect_list))
         {
-            (void)sceIoMkdir("ux0:data/vitals", 0777);
+            (void)sceIoMkdir("ur0:data/vitals", 0777);
             if (copy_file("app0:redirects.txt", redirect_list) < 0)
                 printf("Could not create %s; host redirects stay off.\n", redirect_list);
         }
         /* The same for the DNS rules, which apply to every lookup, not only the HTTP library's */
         if (result >= 0 && !path_exists(dns_list))
         {
-            (void)sceIoMkdir("ux0:data/vitals", 0777);
+            (void)sceIoMkdir("ur0:data/vitals", 0777);
             if (copy_file("app0:dns.txt", dns_list) < 0)
                 printf("Could not create %s; DNS rules stay off.\n", dns_list);
         }
@@ -1233,7 +1233,7 @@ int vitals_install_debug_modules(int level, VitalsNote note)
     if (level < 0 || level >= VITALS_DEBUG_LEVEL_COUNT)
         return -1;
     g_note = note;
-    /* Every build switched is in ux0:data/vitals/system or ur0:tai: vs0 isn't touched */
+    /* Every build switched is in ur0:data/vitals/system or ur0:tai: vs0 isn't touched */
     printf("Installing the %s modules... \n", level == 0 ? "release" : "debug");
     debug_source(level, DEBUG_LIBHTTP, source, sizeof(source));
     result = replace_file(source, new_modules[MODULE_LIBHTTP]);

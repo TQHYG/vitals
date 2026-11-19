@@ -1,4 +1,4 @@
-/* The debug output's file (log_file.c), on files kept in memory: nothing is decided until ux0: is
+/* The debug output's file (log_file.c), on files kept in memory: nothing is decided until ur0: is
  * there, the choice then sends lines to the file or the console, the last boot's log is kept once,
  * a system call's line is taken, and what doesn't fit is counted rather than lost silently */
 
@@ -20,13 +20,13 @@ static char file[0x40000], old_file[0x40000], console[1024];
 static size_t file_size, old_size;
 static int file_exists_now;
 
-#define LOG_PATH "ux0:data/vitals/logs/vitals.log"
+#define LOG_PATH "ur0:data/vitals/logs/vitals.log"
 #define OLD_PATH LOG_PATH ".old"
 
 int ksceIoGetstat(const char *path, SceIoStat *status)
 {
 	(void)status;
-	if (strcmp(path, "ux0:data") == 0)
+	if (strcmp(path, "ur0:data") == 0)
 		return mounted ? 0 : -1;
 	if (strcmp(path, VITALS_LOG_TO_FILE) == 0)
 		return flag ? 0 : -1;
@@ -142,7 +142,7 @@ int main(void)
 {
 	vitals_log_file_start();
 
-	/* ux0: not there yet: the console has the line, and the ring keeps it */
+	/* ur0: not there yet: the console has the line, and the ring keeps it */
 	vitals_log_kernel("vitals-boot", "first %d\n", 1);
 	assert(console_lines == 1 && strcmp(console, "vitals-boot: [1234 ms] first 1\n") == 0);
 	assert(vitals_log_write("vitals-http: early\n", 19) == 0);
@@ -187,6 +187,6 @@ int main(void)
 		vitals_log_file_put(line, 200);
 	vitals_log_file_step();
 	assert(in_file("vitals-boot: [1234 ms] 73 lines lost, too many at once\n"));
-	puts("log file: waits for ux0:, keeps the last boot's, takes lines, cuts long ones, counts lost ones PASS");
+	puts("log file: waits for ur0:, keeps the last boot's, takes lines, cuts long ones, counts lost ones PASS");
 	return 0;
 }

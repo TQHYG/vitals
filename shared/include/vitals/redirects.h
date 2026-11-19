@@ -1,9 +1,9 @@
 #ifndef VITALS_REDIRECTS_H
 #define VITALS_REDIRECTS_H
 
-/* The host redirect list; games may not open ux0:data themselves (their sandbox refuses it with
+/* The host redirect list; games may not open ur0:data themselves (their sandbox refuses it with
  * 0x80010013), so the kernel plugin reads it for the provider through vitals_redirects_read */
-#define VITALS_REDIRECTS_PATH "ux0:data/vitals/redirects.txt"
+#define VITALS_REDIRECTS_PATH "ur0:data/vitals/redirects.txt"
 /* The most one read returns */
 #define VITALS_REDIRECTS_CHUNK 256u
 

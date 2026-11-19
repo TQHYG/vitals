@@ -6,7 +6,7 @@
 - (RPCS3) Installers for Windows, macOS and Linux
 - (vitals-app) Improved app UI, added DNS redirection tests too
 - (vitals-app) Added options, you can now disable specific functions on the fly
-- (Vita) All vitals files are moved to ux0:data/vitals/system: not writing to vs0 anymore makes it safer
+- (Vita) All vitals files are moved to ur0:data/vitals/system: not writing to vs0 anymore makes it safer
 
 ## 2.0
 
@@ -44,7 +44,7 @@
 - (Vita) Added support for Firmware 3.60
 - (Vita) The app shows which version of vitals is installed, and if updates are available
 - (Vita) Debug output can be switched between Off, Basic and Full from the menu
-- (Vita) You can add your own certificates in ux0:data/vitals/custom-certs.pem to be trusted, even if self-signed
+- (Vita) You can add your own certificates in ur0:data/vitals/custom-certs.pem to be trusted, even if self-signed
 - (Vita) The connection test now also checks every host on the redirect list
 - (Vita) Fixed a second run of the connection test failing
 - (Vita) Overall UI improved

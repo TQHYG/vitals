@@ -2,12 +2,12 @@
 """Talks to a Vita over FTP (VitaShell's server, started with SELECT in VitaShell):
 
     tools/vita_comms.py app [VPK]      uploads the vitals app (make, build/vitals-app/vitals-app.vpk, or
-                                       VPK) to ux0:data/vitals/vitals-app-<VERSION>.vpk, for VitaShell to install
+                                       VPK) to ur0:data/vitals/vitals-app-<VERSION>.vpk, for VitaShell to install
     tools/vita_comms.py log            prints vitals.log (Options, Logs: File), and keeps it in fetched/psv/
     tools/vita_comms.py app-log        prints the app's vitals-app.log, and keeps it in fetched/psv/
-    tools/vita_comms.py fetch          copies the app's test reports (ux0:data/vitals/reports, and
-                                       ux0:data/vitals from earlier versions), the crash dumps from
-                                       ux0:data and any SceWebKit dumps from ux0:data/vitals-dump into
+    tools/vita_comms.py fetch          copies the app's test reports (ur0:data/vitals/reports, and
+                                       ur0:data/vitals from earlier versions), the crash dumps from
+                                       ur0:data and any SceWebKit dumps from ur0:data/vitals-dump into
                                        ../fetched/psv/, leaving them on the Vita; the debug output's log files too
     tools/vita_comms.py status         what's on the Vita now: config.txt, vitals' plugin and modules,
                                        the certificate store, the user's lists and the switches
@@ -35,14 +35,14 @@ FETCHED = console_ftp.fetched_folder("psv")
 APP_VPK = os.path.join(BUILD, "vitals-app", "vitals-app.vpk")
 
 # VitaShell's FTP paths: each device is a folder at the top, named with its colon
-VITALS = "/ux0:/data/vitals"
+VITALS = "/ur0:/data/vitals"
 APP_NAME = f"vitals-app-{console_ftp.release()}.vpk"
 APP_TARGET = VITALS + "/" + APP_NAME
 LOG = VITALS + "/logs/vitals.log"
 APP_LOG = VITALS + "/logs/vitals-app.log"
 CONFIG = "/ur0:/tai/config.txt"
 # What the app installs (vitals-app/install.c): the kernel plugin in ur0:tai, vitals' modules in
-# ux0:data/vitals/system
+# ur0:data/vitals/system
 INSTALLED = [
     "/ur0:/tai/vitals.skprx",
     VITALS + "/system/libhttp.suprx",
@@ -65,9 +65,9 @@ FETCH = [
     # The debug output's file (Options, Logs: File), the last boot's, and the app's own
     (VITALS + "/logs", ("vitals.log", "vitals-app.log"), True),
     (VITALS, ("vitals-testresults-", "browserleaks-"), False),
-    ("/ux0:/data", ("psp2core-",), False),
+    ("/ur0:/data", ("psp2core-",), False),
     # A temporary SceWebKit dump, when the folder is there
-    ("/ux0:/data/vitals-dump", ("SceWebKit-",), True),
+    ("/ur0:/data/vitals-dump", ("SceWebKit-",), True),
 ]
 
 
@@ -89,14 +89,14 @@ def enter(ftp, path):
 
 
 def upload_app(ftp, source):
-    """The app's VPK as ux0:data/vitals/vitals-app-<VERSION>.vpk"""
+    """The app's VPK as ur0:data/vitals/vitals-app-<VERSION>.vpk"""
     if not os.path.isfile(source):
         sys.exit(f"{source} is missing: build the app first (make)")
     make_directory(ftp, VITALS)
     with open(source, "rb") as file:
         ftp.storbinary("STOR " + enter(ftp, APP_TARGET), file)
     print(f"{os.path.relpath(source, ROOT)} -> {APP_TARGET} ({os.path.getsize(source)} bytes)")
-    print(f"Install it with VitaShell: ux0:data/vitals/{APP_NAME}, Cross, then Install.")
+    print(f"Install it with VitaShell: ur0:data/vitals/{APP_NAME}, Cross, then Install.")
 
 
 def fetch_log(ftp, path):

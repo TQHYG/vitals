@@ -165,7 +165,7 @@ int ksceIoOpen(const char *path, int flags, int mode) {
     (void)flags; (void)mode;
     expect_hash_stage("hash.open.enter");
     /* A process's own device names mean nothing in the system's view; the engine is hashed at its
-     * fixed place in ux0:data/vitals/system, which is in it */
+     * fixed place in ur0:data/vitals/system, which is in it */
     if (runtime_namespace_required && query_live && index && strcmp(path, VITALS_COMPAT_PATH) != 0)
         return (int32_t)UINT32_C(0x80010002);
     read_once[index] = 0;
@@ -393,7 +393,7 @@ static void test_extended_stack_contract(void) {
     reset();
 }
 
-/* The provider on ux0 not there at boot (an SD2Vita's card not mapped yet): the loader isn't ready,
+/* The provider on ur0 not there at boot (an SD2Vita's card not mapped yet): the loader isn't ready,
  * nothing is injected, and it becomes ready at the first engine load after the file appears */
 static void test_provider_appears_later(void) {
     reset();

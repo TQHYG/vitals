@@ -62,7 +62,7 @@ foreach(line ${export_lines})
     target_link_options(vitals_libssl PRIVATE "-Wl,--undefined=${function}")
 endforeach()
 # vitals' certificate store is read through the kernel plugin's system call, from the stub its
-# build generates (no process but the kernel can open ux0:data/vitals/system)
+# build generates (no process but the kernel can open ur0:data/vitals/system)
 set(VITALS_KERNEL_STUB "${CMAKE_BINARY_DIR}/../vitals-boot/stubs/libvitals_kernel_stub.a")
 if(NOT EXISTS "${VITALS_KERNEL_STUB}")
     message(FATAL_ERROR "${VITALS_KERNEL_STUB} is missing; build ../vitals-boot first (make does this)")

@@ -17,18 +17,18 @@
  * when they wrote their bundle there; vitals' store is its own */
 #define CA "vs0:/data/external/cert/CA_LIST.cer"
 #define CA_BACKUP "vs0:/data/external/cert/CA_LIST.cer_old"
-#define SONY_STORE "ux0:data/vitals/system/sony-certs.pem"
-#define STORE "ux0:data/vitals/system/mozilla-certs.pem"
+#define SONY_STORE "ur0:data/vitals/system/sony-certs.pem"
+#define STORE "ur0:data/vitals/system/mozilla-certs.pem"
 /* Where an earlier build kept vitals' store in one file */
-#define COMBINED_STORE "ux0:data/vitals/system/CA_LIST.cer"
+#define COMBINED_STORE "ur0:data/vitals/system/CA_LIST.cer"
 #define EARLIER_BUNDLE "AN EARLIER VERSION'S BUNDLE\n"
-#define REDIRECTS "ux0:data/vitals/redirects.txt"
-#define DNS_RULES "ux0:data/vitals/dns.txt"
+#define REDIRECTS "ur0:data/vitals/redirects.txt"
+#define DNS_RULES "ur0:data/vitals/dns.txt"
 /* A report where earlier versions saved it, and where it goes; another already moved */
-#define EARLIER_REPORT "ux0:data/vitals/vitals-testresults-2026-01-02_03-04-05.txt"
-#define REPORT "ux0:data/vitals/reports/connection-test-2026-01-02_03-04-05.txt"
-#define EARLIER_REPORT_TAKEN "ux0:data/vitals/vitals-testresults-2026-02-02_00-00-00.txt"
-#define REPORT_TAKEN "ux0:data/vitals/reports/connection-test-2026-02-02_00-00-00.txt"
+#define EARLIER_REPORT "ur0:data/vitals/vitals-testresults-2026-01-02_03-04-05.txt"
+#define REPORT "ur0:data/vitals/reports/connection-test-2026-01-02_03-04-05.txt"
+#define EARLIER_REPORT_TAKEN "ur0:data/vitals/vitals-testresults-2026-02-02_00-00-00.txt"
+#define REPORT_TAKEN "ur0:data/vitals/reports/connection-test-2026-02-02_00-00-00.txt"
 #define VITALS_BLOCK "# VITALS\n*KERNEL\nur0:tai/vitals.skprx\n\n"
 #define SONY_CA "SONY ORIGINAL CERTIFICATES\n"
 #define BUNDLE "VITALS MERGED CERTIFICATES\n"
@@ -145,13 +145,13 @@ static int is(const char *vita_path, const char *expected)
 #define OLD_REAUTH "vs0:/data/external/vitals/native/vitals-reauth.suprx"
 
 /* What vitals installs, and the app0: file each comes from: the kernel plugin in ur0:tai, its modules
- * in ux0:data/vitals/system */
+ * in ur0:data/vitals/system */
 static const char *const installed[][2] = {
     {"ur0:tai/vitals.skprx", "app0:vitals.skprx"},
-    {"ux0:data/vitals/system/vitals.suprx", "app0:vitals.suprx"},
-    {"ux0:data/vitals/system/ScePsp2Compat.suprx", "app0:compat.suprx"},
-    {"ux0:data/vitals/system/libhttp.suprx", "app0:libhttp.suprx"},
-    {"ux0:data/vitals/system/libssl.suprx", "app0:libssl.suprx"},
+    {"ur0:data/vitals/system/vitals.suprx", "app0:vitals.suprx"},
+    {"ur0:data/vitals/system/ScePsp2Compat.suprx", "app0:compat.suprx"},
+    {"ur0:data/vitals/system/libhttp.suprx", "app0:libhttp.suprx"},
+    {"ur0:data/vitals/system/libssl.suprx", "app0:libssl.suprx"},
 };
 
 /* Where earlier versions kept those modules, which an install or uninstall takes out */
@@ -179,7 +179,7 @@ static void fresh_console(void)
     vita_files_root(root);
     put(CONFIG, ORIGINAL_CONFIG);
     put(CA, SONY_CA);
-    make_directories("ux0:data");
+    make_directories("ur0:data");
     make_directories("vs0:sys/external");
     const char *app_files[] = {"vitals.skprx", "vitals.suprx", "compat.suprx", "libhttp.suprx", "libssl.suprx",
                                "redirects.txt", "dns.txt",
@@ -228,8 +228,8 @@ static void expect_uninstalled(void)
     for (size_t i = 0; i < INSTALLED_COUNT; ++i)
         assert(!exists(installed[i][0]));
     assert(is(CA, SONY_CA) && !exists(CA_BACKUP) && store_absent());
-    assert(!exists("ux0:data/vitals/system/installed.txt") && vitals_install_debug_level() == 0);
-    assert(!exists("ux0:data/vitals/flags/debug.1") && !exists("ux0:data/vitals/flags/debug.2"));
+    assert(!exists("ur0:data/vitals/system/installed.txt") && vitals_install_debug_level() == 0);
+    assert(!exists("ur0:data/vitals/flags/debug.1") && !exists("ur0:data/vitals/flags/debug.2"));
     assert(vitals_install_complete() == 0);
 }
 
@@ -255,7 +255,7 @@ static void expect_no_old_layout(void)
     assert(vitals_install_old_layout() == 0);
 }
 
-/* An install over an earlier version's layout moves it: the modules go to ux0:data/vitals/system and
+/* An install over an earlier version's layout moves it: the modules go to ur0:data/vitals/system and
  * the old copies and their folders go; while any is left, vitals doesn't count as installed */
 static void test_old_layout_moves(void)
 {
@@ -271,7 +271,7 @@ static void test_old_layout_moves(void)
     assert(vitals_install_apply(VITALS_OPTION_FULL, 1, note) >= 0);
     expect_uninstalled();
     expect_no_old_layout();
-    assert(!exists("ux0:data/vitals/system"));
+    assert(!exists("ur0:data/vitals/system"));
 
     /* The bundle alone on the system counts as the old layout; a certificate update puts the
      * system's own back too, whatever it holds (here the user's edit of Sony's), as it was */
@@ -306,11 +306,11 @@ static void test_old_layout_moves(void)
     expect_installed();
     assert(!exists(COMBINED_STORE ".prepared"));
     /* The user's own certificates are the kernel's to read: never written or removed */
-    put("ux0:data/vitals/custom-certs.pem", "MY CERTIFICATES\n");
+    put("ur0:data/vitals/custom-certs.pem", "MY CERTIFICATES\n");
     assert(vitals_install_apply(VITALS_OPTION_CERTIFICATES, 0, note) >= 0);
     assert(vitals_install_apply(VITALS_OPTION_FULL, 1, note) >= 0);
     expect_uninstalled();
-    assert(is("ux0:data/vitals/custom-certs.pem", "MY CERTIFICATES\n"));
+    assert(is("ur0:data/vitals/custom-certs.pem", "MY CERTIFICATES\n"));
 }
 
 static void test_install_reinstall_uninstall(void)
@@ -327,13 +327,13 @@ static void test_install_reinstall_uninstall(void)
     put(EARLIER_REPORT, "an earlier report\n");
     put(EARLIER_REPORT_TAKEN, "older\n");
     put(REPORT_TAKEN, "already moved\n");
-    put("ux0:data/vitals/notes.txt", "the user's\n");
+    put("ur0:data/vitals/notes.txt", "the user's\n");
     assert(vitals_install_apply(VITALS_OPTION_FULL, 0, note) >= 0);
     expect_installed();
     assert(!exists(OLD_HTTP_PROVIDER) && !exists(OLD_REAUTH));
     assert(!exists(EARLIER_REPORT) && is(REPORT, "an earlier report\n"));
     assert(is(EARLIER_REPORT_TAKEN, "older\n") && is(REPORT_TAKEN, "already moved\n"));
-    assert(is("ux0:data/vitals/notes.txt", "the user's\n"));
+    assert(is("ur0:data/vitals/notes.txt", "the user's\n"));
     assert(is(REDIRECTS, "contents of redirects.txt\n") && is(DNS_RULES, "contents of dns.txt\n"));
     /* While it is there, vitals doesn't count as installed */
     put(OLD_HTTP_PROVIDER, "an earlier version's provider\n");
@@ -397,8 +397,8 @@ static void test_install_reinstall_uninstall(void)
     assert(is(REPORT, "an earlier report\n"));
     assert(remove(vita_files_path(REPORT)) == 0 && remove(vita_files_path(REPORT_TAKEN)) == 0 &&
            remove(vita_files_path(EARLIER_REPORT_TAKEN)) == 0);
-    assert(vitals_install_apply(VITALS_OPTION_FULL, 0, note) >= 0 && exists("ux0:data/vitals/reports"));
-    assert(vitals_install_apply(VITALS_OPTION_FULL, 1, note) >= 0 && !exists("ux0:data/vitals/reports"));
+    assert(vitals_install_apply(VITALS_OPTION_FULL, 0, note) >= 0 && exists("ur0:data/vitals/reports"));
+    assert(vitals_install_apply(VITALS_OPTION_FULL, 1, note) >= 0 && !exists("ur0:data/vitals/reports"));
     /* Without an installed plugin there is nothing to compare */
     assert(vitals_install_plugin_current() < 0);
 }
@@ -407,9 +407,9 @@ static void test_install_reinstall_uninstall(void)
 static void expect_debug_level(int level)
 {
     static const char *const modules[][2] = {
-        {"ux0:data/vitals/system/libhttp.suprx", "libhttp.suprx"},
-        {"ux0:data/vitals/system/libssl.suprx", "libssl.suprx"},
-        {"ux0:data/vitals/system/vitals.suprx", "vitals.suprx"},
+        {"ur0:data/vitals/system/libhttp.suprx", "libhttp.suprx"},
+        {"ur0:data/vitals/system/libssl.suprx", "libssl.suprx"},
+        {"ur0:data/vitals/system/vitals.suprx", "vitals.suprx"},
         {"ur0:tai/vitals.skprx", "vitals.skprx"},
     };
     for (size_t i = 0; i < sizeof(modules) / sizeof(modules[0]); ++i)
@@ -449,18 +449,18 @@ static void test_debug_levels(void)
     expect_debug_level(0);
     /* installed.txt has the release; the level is a marker in flags/, as on the PS3, whatever the
      * modules hold, none for Off */
-    assert(is("ux0:data/vitals/system/installed.txt", "version=" VITALS_VERSION "\n"));
-    assert(!exists("ux0:data/vitals/flags/debug.1") && !exists("ux0:data/vitals/flags/debug.2"));
-    put("ux0:data/vitals/system/libhttp.suprx", "another version's libhttp\n");
+    assert(is("ur0:data/vitals/system/installed.txt", "version=" VITALS_VERSION "\n"));
+    assert(!exists("ur0:data/vitals/flags/debug.1") && !exists("ur0:data/vitals/flags/debug.2"));
+    put("ur0:data/vitals/system/libhttp.suprx", "another version's libhttp\n");
     assert(vitals_install_debug_level() == 0);
     assert(vitals_install_debug_modules(2, note) >= 0);
-    assert(exists("ux0:data/vitals/flags/debug.2") && !exists("ux0:data/vitals/flags/debug.1"));
+    assert(exists("ur0:data/vitals/flags/debug.2") && !exists("ur0:data/vitals/flags/debug.1"));
     assert(vitals_install_debug_level() == 2);
     assert(vitals_install_debug_modules(1, note) >= 0);
-    assert(exists("ux0:data/vitals/flags/debug.1") && !exists("ux0:data/vitals/flags/debug.2"));
+    assert(exists("ur0:data/vitals/flags/debug.1") && !exists("ur0:data/vitals/flags/debug.2"));
     /* An install puts the release modules back, and takes the marker away */
     assert(vitals_install_apply(VITALS_OPTION_FULL, 0, note) >= 0);
-    assert(vitals_install_debug_level() == 0 && !exists("ux0:data/vitals/flags/debug.1"));
+    assert(vitals_install_debug_level() == 0 && !exists("ur0:data/vitals/flags/debug.1"));
 }
 
 static void test_conflicting_installs_are_removed(void)
@@ -471,7 +471,7 @@ static void test_conflicting_installs_are_removed(void)
     put(CONFIG, "# ITLS\n*KERNEL\nur0:tai/itls.skprx\n\n"
                 "# TLS_FIXER\n*KERNEL\nur0:tai/tls_fixer.skprx\n\n"
                 ORIGINAL_CONFIG
-                "*KERNEL\r\nux0:tai/reAuth.skprx\r\n");
+                "*KERNEL\r\nur0:tai/reAuth.skprx\r\n");
     put(CA, "ITLS BUNDLE\n");
     put(CA_BACKUP, SONY_CA);
     /* iTLS-Enso's full set, including its 3.60 DNS fix and replacement Store library */
@@ -479,7 +479,7 @@ static void test_conflicting_installs_are_removed(void)
                             "vs0:/data/external/itls/libssl.suprx", "vs0:/data/external/itls/ScePsp2Compat.suprx",
                             "vs0:/data/external/itls/old_dns_fix.suprx", "vs0:/data/external/itls/np_commerce2.suprx",
                             "ur0:tai/tls_fixer.skprx", "vs0:/data/external/tls_fixer/native/tls_fixer.suprx",
-                            "ux0:tai/reAuth.skprx", "ur0:data/reAuth/reAuth.suprx", "ur0:data/reAuth/libhttp.suprx"};
+                            "ur0:tai/reAuth.skprx", "ur0:data/reAuth/reAuth.suprx", "ur0:data/reAuth/libhttp.suprx"};
     for (size_t i = 0; i < sizeof(others) / sizeof(others[0]); ++i)
         put(others[i], "old plugin\n");
 

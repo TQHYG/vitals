@@ -16,7 +16,7 @@ void check_protocol_response(unsigned version, const char *body, size_t size, Ch
 void check_record_retry(CheckResult *result, const CheckResult *retry);
 /* Whether a loaded module is vitals' libhttp, from vitals' folder */
 int check_http_module_active(const char *name, const char *path, unsigned state);
-/* The same for vitals-ssl: SceLibSsl started from ux0:data/vitals/system (the Options' tls.off
+/* The same for vitals-ssl: SceLibSsl started from ur0:data/vitals/system (the Options' tls.off
  * keeps Sony's) */
 int check_ssl_module_active(const char *name, const char *path, unsigned state);
 int check_protocol_body(unsigned version, const char *body, size_t size);

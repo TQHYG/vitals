@@ -4,7 +4,7 @@
 /* Where vitals keeps its files on the Vita, which the shared app shows and writes (shared/app/model.h,
  * ui.c, console_vita.c): the host redirects the kernel plugin applies, the DNS rules it answers lookups
  * with, the connection test's reports and the Options' switches */
-#define VITALS_DIRECTORY "ux0:data/vitals"
+#define VITALS_DIRECTORY "ur0:data/vitals"
 #define VITALS_REPORTS_DIRECTORY VITALS_DIRECTORY "/reports"
 #define VITALS_LOGS_DIRECTORY VITALS_DIRECTORY "/logs"
 #define VITALS_APP_LOG VITALS_LOGS_DIRECTORY "/vitals-app.log"

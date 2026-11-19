@@ -45,7 +45,7 @@ This uses Sony's own TLS, so it shows what your firmware does today.
 2. Open the vitals app. It should say "This system isn't supported" and offer only the connection test
    and the documents. Write down the firmware it shows at the top.
 3. Run the **connection test**, and press **START** when it's done to save its report.
-4. Over FTP, download the newest file in `/ux0:/data/vitals/reports/`. It lists every request the test
+4. Over FTP, download the newest file in `/ur0:/data/vitals/reports/`. It lists every request the test
    made, so read through it first if you'd like to.
 5. Send the report and what the app said.
 

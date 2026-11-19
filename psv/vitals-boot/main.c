@@ -64,7 +64,7 @@ static int switched_off(const char *flag)
 }
 
 /* vitals' libhttp and libssl, installed together and looked for at each load rather than once at
- * boot: they're on ux0, which a plugin loaded after this one may still be mapping when it starts (an
+ * boot: they're on ur0, which a plugin loaded after this one may still be mapping when it starts (an
  * SD2Vita's), and while they aren't there Sony's load. The switches, looked for at the same time,
  * each keep one of Sony's: tls.off libssl (vitals-http then does its TLS on Sony's, as Sony's libhttp
  * does), http.off libhttp (on vitals-ssl, which has all Sony's libhttp uses) */
@@ -90,7 +90,7 @@ static int path_is(const char *path, const char *a, const char *b)
 }
 
 /* vitals' engine, when the process's own load of it failed: the browser's process sees its files
- * through a view of its own, without ux0 (0x80010013, no such device), so the kernel loads it with its
+ * through a view of its own, without ur0 (0x80010013, no such device), so the kernel loads it with its
  * own call, as it loads the provider into that same process (private, as the browser starts it so on
  * the console; naming the process to the hooked load instead fails the same way). Its module ID, or
  * the error */
@@ -123,7 +123,7 @@ static SceUID load_for_pid_patched(SceUID pid, const char *path, uint32_t flags,
         module = MODULE_LIBSSL;
         path = g_replacement_modules[module];
     }
-    /* The browser engine: from ux0:data/vitals/system too, looked for at each load as libhttp is; its
+    /* The browser engine: from ur0:data/vitals/system too, looked for at each load as libhttp is; its
      * TLS is vitals-ssl's, so tls.off keeps Sony's engine and its own TLS */
     else if (vitals_browser_engine_request(path) && module_present(MODULE_COMPAT) && !switched_off(VITALS_TLS_OFF))
     {
@@ -218,7 +218,7 @@ int module_start(SceSize argc, const void *args)
     /* The start hook may already be running on another thread; its code must stay mapped */
     if (g_loader_hook_id < 0)
         VITALS_LOG("loader hook failed: 0x%08X", g_loader_hook_id);
-    /* The DNS rules (ux0:data/vitals/dns.txt), for every lookup in every process */
+    /* The DNS rules (ur0:data/vitals/dns.txt), for every lookup in every process */
     (void)vitals_dns_watch_start();
     return SCE_KERNEL_START_SUCCESS;
 

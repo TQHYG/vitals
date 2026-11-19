@@ -33,7 +33,7 @@ You need a hacked PS Vita on **firmware 3.60 or 3.65** with taiHEN. Supporting o
   _This installs everything: the browser plugin, the system plugin and the certificates. The certificates are also downloaded from the internet, so there's no need to update them -- yet_
 - When it's done, press **START** to reboot the Vita (or **Circle** to reboot later): `vitals` starts at the next boot
 
-`vitals` is listed first in the first `*KERNEL` section of `ur0:tai/config.txt`, so it loads before your other kernel plugins. Its kernel plugin is `ur0:tai/vitals.skprx`; its other modules and its certificate store are in `ux0:data/vitals/system/`, next to your lists: Sony's list from firmware 3.74 as Sony ships it (`sony-certs.pem`), and the Mozilla certificates that list lacks (`mozilla-certs.pem`, which **Update certificates** rewrites). The system's own certificate store on `vs0:` is left as it is. Updating from a version that kept the modules on `vs0:` moves them, and puts back the system's certificate store as it was before `vitals` (`CA_LIST.cer_old`), even if you had edited it.
+`vitals` is listed first in the first `*KERNEL` section of `ur0:tai/config.txt`, so it loads before your other kernel plugins. Its kernel plugin is `ur0:tai/vitals.skprx`; its other modules and its certificate store are in `ur0:data/vitals/system/`, next to your lists: Sony's list from firmware 3.74 as Sony ships it (`sony-certs.pem`), and the Mozilla certificates that list lacks (`mozilla-certs.pem`, which **Update certificates** rewrites). The system's own certificate store on `vs0:` is left as it is. Updating from a version that kept the modules on `vs0:` moves them, and puts back the system's certificate store as it was before `vitals` (`CA_LIST.cer_old`), even if you had edited it.
 
 Once `vitals` is installed, from the same application you'll be able to:
 
@@ -41,7 +41,7 @@ Once `vitals` is installed, from the same application you'll be able to:
   - **Update** or **Reinstall** installs this version over the existing one, to update `vitals` or repair an installation
   - **Uninstall** removes all of `vitals` files and configurations
 - **Update certificates**: it just downloads the latest Mozilla certificates and rebuilds the certificate store, without touching the plugins, use it from time to time to keep the store current. Each certificate is read with Mbed TLS, as vitals-ssl reads the store, and one it can't read is left out; when the download fails, the store stays as it was. Installing uses the certificates the app carries when it can't download them. The date next to it is when they were last updated, in red once they're more than three months old
-- **Options**: turns TLS, HTTP and the DNS rules on or off, as on the PS3, and picks the debug output (see below); **START** applies them and reboots the Vita. Each is a file in `ux0:data/vitals/flags/` (`tls.off`, `http.off`, `redirects.off`, `dns.off`), there while that part is off, which the kernel plugin reads:
+- **Options**: turns TLS, HTTP and the DNS rules on or off, as on the PS3, and picks the debug output (see below); **START** applies them and reboots the Vita. Each is a file in `ur0:data/vitals/flags/` (`tls.off`, `http.off`, `redirects.off`, `dns.off`), there while that part is off, which the kernel plugin reads:
   - **TLS** Off: apps, games and the browser get Sony's TLS (and its old certificates); `vitals`' HTTP library stays, doing its TLS on Sony's as Sony's HTTP library does, so the host redirects and the User-Agent suffix still apply
   - **HTTP**: **On** is `vitals`' HTTP library with the host redirects; **Redirects off** (orange) keeps the library but doesn't apply `redirects.txt` (`redirects.off`); **Off** is Sony's HTTP library, still on `vitals`' TLS, so no host redirects or User-Agent suffix (`http.off`). The redirects are the HTTP library's, so they go with it
   - **DNS rules** Off: `dns.txt` isn't applied
@@ -77,7 +77,7 @@ TLS 1.0 and 1.1 are deliberately disabled.
 
 ## Host redirects
 
-Games whose official servers are gone can be sent to a community server by listing the old and new host names in `ux0:data/vitals/redirects.txt`, one pair per line:
+Games whose official servers are gone can be sent to a community server by listing the old and new host names in `ur0:data/vitals/redirects.txt`, one pair per line:
 
 ```
 # old host                          new host
@@ -94,7 +94,7 @@ For now, only up to a maximum of 32 hosts can be redirected (trying to be cautio
 
 ## DNS rules
 
-`redirects.txt` is for the HTTP library only. For every other lookup (a game's own UDP or TCP connections, and the other system libraries), put rules in `ux0:data/vitals/dns.txt`, one `host target` pair per line, where the target is another host name, an IPv4 address, or `block`:
+`redirects.txt` is for the HTTP library only. For every other lookup (a game's own UDP or TCP connections, and the other system libraries), put rules in `ur0:data/vitals/dns.txt`, one `host target` pair per line, where the target is another host name, an IPv4 address, or `block`:
 
 ```
 # host                      target
@@ -110,7 +110,7 @@ The app still connects by the original name, so an HTTPS server must have a cert
 
 ## User-Agent
 
-Every request carries the app's own User-Agent followed by `libhttp/3.74 (PS Vita)`, as the latest firmware's library sends. To send something else in place of that last part, put it on a line of `ux0:data/vitals/useragent.txt`:
+Every request carries the app's own User-Agent followed by `libhttp/3.74 (PS Vita)`, as the latest firmware's library sends. To send something else in place of that last part, put it on a line of `ur0:data/vitals/useragent.txt`:
 
 ```
 # replaces "libhttp/3.74 (PS Vita)"
@@ -121,7 +121,7 @@ The first line that isn't empty or a `#` comment is used, trimmed, up to 127 pri
 
 ## Custom certificates
 
-To trust your own servers, for example a community server with a self-signed certificate, put their certificates in `ux0:data/vitals/custom-certs.pem`, one or more PEM blocks (`-----BEGIN CERTIFICATE-----` … `-----END CERTIFICATE-----`). Comments and anything that isn't a certificate are ignored.
+To trust your own servers, for example a community server with a self-signed certificate, put their certificates in `ur0:data/vitals/custom-certs.pem`, one or more PEM blocks (`-----BEGIN CERTIFICATE-----` … `-----END CERTIFICATE-----`). Comments and anything that isn't a certificate are ignored.
 
 The file is optional. `vitals` reads it as it is, after Sony's and Mozilla's certificates, each time an app or the browser starts, so an edit applies to the next app you open: there's nothing to update. A mistake in the file is skipped without affecting the rest of the store, and uninstalling leaves the file in place.
 
@@ -148,7 +148,7 @@ The certificate must also name the host apps connect to: combined with [host red
 - every rule in your `dns.txt`, its host looked up through `sceNetResolver` as a game would, so the kernel plugin sees the query: a `block` rule passes when the name doesn't exist, an address when it's the answer, and a host name when the answer is among the target's own addresses. While `flags/dns.off` is there the rules aren't tested
 - whether vitals-http is loaded in the app
 
-A request that times out is tried again, up to 3 times in all, since slow servers say nothing about TLS. Square goes through the detail pages: cipher suites, request details, handshake details, certificate checks, host redirects and DNS rules. Press START after a run to save its report to `ux0:data/vitals/reports/` as text, with every result (installing moves the reports earlier versions saved in `ux0:data/vitals/` there). The test works on any firmware and changes nothing on the console.
+A request that times out is tried again, up to 3 times in all, since slow servers say nothing about TLS. Square goes through the detail pages: cipher suites, request details, handshake details, certificate checks, host redirects and DNS rules. Press START after a run to save its report to `ur0:data/vitals/reports/` as text, with every result (installing moves the reports earlier versions saved in `ur0:data/vitals/` there). The test works on any firmware and changes nothing on the console.
 
 ## Repository layout
 
@@ -206,15 +206,15 @@ Debug output levels, for `vitals-http` and the browser provider (every line star
 - **Basic (1):** just the calls: start-up, the app's `sceHttp` calls with their results and the host they go to, each handshake's result, and any failure. The kernel plugin also logs every DNS query a process sends (`vitals-dns: query …`), after the reboot that switching debug output asks for
 - **Full (2):** everything in Basic, plus the details: every step of every connection (certificates, retries, locks, sockets, memory), and each request's whole URL, headers and body as they are, PSN's sign-in, cookies and tokens included: keep a Full log to yourself. This produces a lot of output and slows connections down, use it only to investigate a problem
 
-The app has its own log at the same levels, which follows **Logs** too: the debug console, or `ux0:data/vitals/logs/vitals-app.log`, started afresh each time the app opens.
+The app has its own log at the same levels, which follows **Logs** too: the debug console, or `ur0:data/vitals/logs/vitals-app.log`, started afresh each time the app opens.
 
-Every build includes all three levels; choose one on the console in the app's **Options**, where **START** applies it and reboots the Vita. While it isn't Off, **Logs** picks where the lines go: **Network** (the default) leaves them on the debug console, for a network logger such as [catlog](https://github.com/isage/catlog), and **File** writes them to `ux0:data/vitals/logs/vitals.log`, keeping the previous boot's as `vitals.log.old`, through the kernel plugin (`vitals-boot/log_file.c`), as games can't open that folder themselves; `make fetch` brings both back. As on the PS3, the app records the release it installed in `ux0:data/vitals/system/installed.txt` and the level as a marker, `ux0:data/vitals/flags/debug.1` for Basic or `debug.2` for Full (none for Off), which installing, reinstalling and updating keep. To build a single component at a level, run `make -C vitals-browser DEBUG=2` (each level has its own `build/` folder).
+Every build includes all three levels; choose one on the console in the app's **Options**, where **START** applies it and reboots the Vita. While it isn't Off, **Logs** picks where the lines go: **Network** (the default) leaves them on the debug console, for a network logger such as [catlog](https://github.com/isage/catlog), and **File** writes them to `ur0:data/vitals/logs/vitals.log`, keeping the previous boot's as `vitals.log.old`, through the kernel plugin (`vitals-boot/log_file.c`), as games can't open that folder themselves; `make fetch` brings both back. As on the PS3, the app records the release it installed in `ur0:data/vitals/system/installed.txt` and the level as a marker, `ur0:data/vitals/flags/debug.1` for Basic or `debug.2` for Full (none for Off), which installing, reinstalling and updating keep. To build a single component at a level, run `make -C vitals-browser DEBUG=2` (each level has its own `build/` folder).
 
 ### Working with a Vita
 
 [tools/vita_comms.py](tools/vita_comms.py) talks to the Vita over VitaShell's FTP server (**SELECT** in VitaShell starts it). Put the Vita's address in the repository's `.env` first (`cp ../.env.example ../.env` from `psv/`, then set `VITA_HOST`; the PS3's address goes there too), or pass it as `make status VITA_HOST=...`.
 
-- `make upload-app`: builds the app and puts `vitals-app-<VERSION>.vpk` in `ux0:data/vitals/`, for VitaShell to install
+- `make upload-app`: builds the app and puts `vitals-app-<VERSION>.vpk` in `ur0:data/vitals/`, for VitaShell to install
 - `make log`, `make app-log`: print `vitals.log` or `vitals-app.log` and keep a copy in `../fetched/psv/`
 - `make fetch`: brings the logs (`vitals.log`, its previous boot's and `vitals-app.log`), the app's test reports and BrowserLeaks dumps, the crash dumps (`psp2core-*`) and any SceWebKit dumps into `../fetched/psv/`, leaving them on the Vita. The reports can hold PSN details, so they stay in `fetched/`, which isn't committed
 - `make status`: `config.txt`, vitals' plugin and modules, the certificate store, your lists and the logs, as they are on the Vita

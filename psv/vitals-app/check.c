@@ -354,7 +354,7 @@ static int fetch(void *context, unsigned test, int verify, char *body, size_t *l
     return fetch_url(url, verify, test < 4, 0, body, length, r);
 }
 
-/* The host redirect list, read the way vitals' provider reads it (the app may open ux0:data
+/* The host redirect list, read the way vitals' provider reads it (the app may open ur0:data
  * itself), so the test sees the same rules */
 static FILE *redirect_file;
 static int read_redirects(unsigned int offset, void *buffer, unsigned int size)

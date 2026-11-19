@@ -11,7 +11,7 @@
 #define VITALS_REDIRECTS_INVALID ((int)0x80010016)
 #define VITALS_REDIRECTS_NOT_FOUND ((int)0x80010002)
 
-/* Games run in a sandbox that keeps them out of ux0:data, while the kernel is not; a file is
+/* Games run in a sandbox that keeps them out of ur0:data, while the kernel is not; a file is
  * opened for each read, so edits apply to the next game that starts */
 static int read_file(const char *path, unsigned int offset, void *buffer, unsigned int size) {
     char data[VITALS_REDIRECTS_CHUNK];

@@ -154,7 +154,7 @@ static int same_file(const char *a, const char *b) {
 }
 int check_http_module_active(const char *name, const char *path, unsigned state) {
     /* vitals-http keeps libhttp's name; the kernel plugin's swap is what loads it from vitals'
-     * folder (ux0:data/vitals/system). Sony reports STARTED=6; presence alone does not establish
+     * folder (ur0:data/vitals/system). Sony reports STARTED=6; presence alone does not establish
      * activation */
     static const char module[] = "SceLibHttp";
     if (name == NULL || path == NULL || state != 6 || strncmp(name, module, sizeof(module)) != 0)

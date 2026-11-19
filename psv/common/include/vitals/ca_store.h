@@ -7,14 +7,14 @@
  * order, each followed by a line break:
  * - Sony's list from firmware 3.74, as Sony ships it (the app's sony-certs.pem);
  * - the Mozilla certificates Sony's list lacks, which a certificate update rewrites;
- * - the user's own, ux0:data/vitals/custom-certs.pem, as the user writes it (optional; what isn't a
+ * - the user's own, ur0:data/vitals/custom-certs.pem, as the user writes it (optional; what isn't a
  *   certificate in it is skipped by the store's index).
- * The first two are vitals' own, in ux0:data/vitals/system: the system's vs0 CA_LIST.cer is left as
- * it was. Games may not open ux0:data themselves, so the kernel plugin reads the store through
+ * The first two are vitals' own, in ur0:data/vitals/system: the system's vs0 CA_LIST.cer is left as
+ * it was. Games may not open ur0:data themselves, so the kernel plugin reads the store through
  * vitals_ca_read */
 #define VITALS_CA_SONY_PATH VITALS_SYSTEM_DIRECTORY "/sony-certs.pem"
 #define VITALS_CA_MOZILLA_PATH VITALS_SYSTEM_DIRECTORY "/mozilla-certs.pem"
-#define VITALS_CUSTOM_CERTIFICATES_PATH "ux0:data/vitals/custom-certs.pem"
+#define VITALS_CUSTOM_CERTIFICATES_PATH "ur0:data/vitals/custom-certs.pem"
 /* Where earlier builds kept the three in one file, which an install takes out */
 #define VITALS_CA_COMBINED_PATH VITALS_SYSTEM_DIRECTORY "/CA_LIST.cer"
 

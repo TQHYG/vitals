@@ -113,7 +113,7 @@ static const char *list_text;
 static int list_reads;
 int ksceIoOpen(const char *path, int flags, int mode) {
     /* DNS rules have their own list, apart from the HTTP library's redirects.txt */
-    assert(strcmp(path, "ux0:data/vitals/dns.txt") == 0 && flags == SCE_O_RDONLY && mode == 0);
+    assert(strcmp(path, "ur0:data/vitals/dns.txt") == 0 && flags == SCE_O_RDONLY && mode == 0);
     ++list_reads;
     return list_text != NULL ? 7 : (int)0x80010002;
 }
@@ -130,7 +130,7 @@ int ksceIoClose(int fd) { assert(fd == 7); return 0; }
 static int dns_off;
 int ksceIoGetstat(const char *path, SceIoStat *status) {
     (void)status;
-    assert(strcmp(path, "ux0:data/vitals/flags/dns.off") == 0);
+    assert(strcmp(path, "ur0:data/vitals/flags/dns.off") == 0);
     return dns_off ? 0 : (int)0x80010002;
 }
 

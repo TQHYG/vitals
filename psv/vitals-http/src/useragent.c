@@ -5,7 +5,7 @@
 #include <string.h>
 
 /* What follows an app's own User-Agent: "libhttp/3.74 (PS Vita)", or the first line of
- * ux0:data/vitals/useragent.txt that isn't empty or a '#' comment, read once per sceHttpInit
+ * ur0:data/vitals/useragent.txt that isn't empty or a '#' comment, read once per sceHttpInit
  * through the kernel plugin. A line with anything but printable ASCII is ignored, so the file
  * can't add headers of its own */
 

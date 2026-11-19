@@ -18,24 +18,24 @@ Everything lives until the process exits.
 
 | Module                          | File loaded                                                                 | Loaded when                                                    | Into         | Shared or private                                     | Until                               |
 | ------------------------------- | --------------------------------------------------------------------------- | -------------------------------------------------------------- | ------------ | ----------------------------------------------------- | ----------------------------------- |
-| `ScePsp2Compat` (vitals' copy)  | `ux0:data/vitals/system/ScePsp2Compat.suprx`, in place of `…/webcore/ScePsp2Compat.suprx` | a process loads the browser engine's networking module         | that process | as the process asked; vitals doesn't change its flags | the process unloads it or exits     |
-| `SceLibSsl` (vitals-ssl)        | `ux0:data/vitals/system/libssl.suprx`, in place of Sony's                | right after that `ScePsp2Compat` has started, unless there     | that process | **shared**, as the system loads it for apps           | the process exits                   |
-| `vitals` (the browser provider) | `ux0:data/vitals/system/vitals.suprx`                                        | right after libssl, once per process                           | that process | private                                               | the process exits; it never unloads |
+| `ScePsp2Compat` (vitals' copy)  | `ur0:data/vitals/system/ScePsp2Compat.suprx`, in place of `…/webcore/ScePsp2Compat.suprx` | a process loads the browser engine's networking module         | that process | as the process asked; vitals doesn't change its flags | the process unloads it or exits     |
+| `SceLibSsl` (vitals-ssl)        | `ur0:data/vitals/system/libssl.suprx`, in place of Sony's                | right after that `ScePsp2Compat` has started, unless there     | that process | **shared**, as the system loads it for apps           | the process exits                   |
+| `vitals` (the browser provider) | `ur0:data/vitals/system/vitals.suprx`                                        | right after libssl, once per process                           | that process | private                                               | the process exits; it never unloads |
 
 ## 1. On disk
 
 | File on the console                             | Comes from                                                                                | Installed by                                                    |
 | ----------------------------------------------- | ----------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
-| `ux0:data/vitals/system/ScePsp2Compat.suprx` | `app0:compat.suprx` ([vitals-app/assets/compat.suprx](../vitals-app/assets/compat.suprx)) | `install_compat` in [install.c](../vitals-app/install.c) |
-| `ux0:data/vitals/system/vitals.suprx`            | the browser provider, built from [vitals-browser/](../vitals-browser/)            | same function                                                   |
-| `ux0:data/vitals/system/libssl.suprx`        | vitals-ssl, the system's libssl, which also does the provider's TLS                       | `install_http_modules`                                          |
-| `ux0:data/vitals/system/sony-certs.pem`, `mozilla-certs.pem` | the certificate store libssl trusts, with `ux0:data/vitals/custom-certs.pem` ([libssl.md](libssl.md)) | `install_certificates`                                          |
+| `ur0:data/vitals/system/ScePsp2Compat.suprx` | `app0:compat.suprx` ([vitals-app/assets/compat.suprx](../vitals-app/assets/compat.suprx)) | `install_compat` in [install.c](../vitals-app/install.c) |
+| `ur0:data/vitals/system/vitals.suprx`            | the browser provider, built from [vitals-browser/](../vitals-browser/)            | same function                                                   |
+| `ur0:data/vitals/system/libssl.suprx`        | vitals-ssl, the system's libssl, which also does the provider's TLS                       | `install_http_modules`                                          |
+| `ur0:data/vitals/system/sony-certs.pem`, `mozilla-certs.pem` | the certificate store libssl trusts, with `ur0:data/vitals/custom-certs.pem` ([libssl.md](libssl.md)) | `install_certificates`                                          |
 
-- **One copy of the provider**, in `ux0:data/vitals/system` with vitals' other modules
+- **One copy of the provider**, in `ur0:data/vitals/system` with vitals' other modules
   (`VITALS_BROWSER_PROVIDER_BOOT_PATH`, [path.h](../common/include/vitals/path.h)). Earlier
   versions kept it in `ur0:tai/vitals-native/` with an unused second copy on `vs0:`; installing
   removes both.
-- **Everything in `ux0:data/vitals/system`**: the engine, the provider, libssl and the certificate
+- **Everything in `ur0:data/vitals/system`**: the engine, the provider, libssl and the certificate
   store. Earlier versions kept the engine on `vs0:`, next to Sony's, so the provider could find the
   certificate store from the engine's own path; the store is vitals' own now, which libssl reads
   through the kernel plugin (section 6, step 5), so no process needs a path to it. Installing
@@ -51,16 +51,16 @@ Everything lives until the process exits.
 
 The kernel plugin's `module_start` ([vitals-boot/main.c](../vitals-boot/main.c)):
 
-1. **Nothing looked for yet** — vitals' engine is in `ux0:data/vitals/system`, which may not be mapped
+1. **Nothing looked for yet** — vitals' engine is in `ur0:data/vitals/system`, which may not be mapped
    when the plugin starts, so it's looked for at each engine load (section 3), independently of the
    libhttp and libssl pair.
 2. **Loader readiness** — `vitals_kernel_loader_init`
    ([tls13_loader.c](../vitals-boot/tls13_loader.c)) runs `target_matches` for the
    browser target ([tls13_loader.c](../vitals-boot/tls13_loader.c)): the provider
-   at `ux0:data/vitals/system/vitals.suprx` must exist, and the replacement module's SHA-256 must
+   at `ur0:data/vitals/system/vitals.suprx` must exist, and the replacement module's SHA-256 must
    equal `g_expected_browser_sha256` ([tls13_loader.c](../vitals-boot/tls13_loader.c)).
    Only then is the loader ready (`browser=1` in `vitals-boot: loader init=…`). When the provider isn't
-   there yet at boot (`ux0:` not mapped), `vitals_kernel_browser_loader_ready` looks again at each
+   there yet at boot (`ur0:` not mapped), `vitals_kernel_browser_loader_ready` looks again at each
    engine load.
 3. **The module manager hooks**: the load and start hooks every replacement goes through.
 
@@ -72,11 +72,11 @@ The kernel plugin's `module_start` ([vitals-boot/main.c](../vitals-boot/main.c))
    `vitals_browser_engine_request` ([path.c](../common/src/path.c)) matches any path ending in
    `webcore/ScePsp2Compat.suprx` right after a `/` or `:`, on a device: a process may see
    `vs0:data/external` under a device of its own (`sd062e8855c978:/webcore/…`). When
-   `ux0:data/vitals/system/ScePsp2Compat.suprx` is there, the load is swapped to it.
+   `ur0:data/vitals/system/ScePsp2Compat.suprx` is there, the load is swapped to it.
 2. **Flags left alone** — the load is shared or private as the process asked; there is no HTTP
    policy for the browser engine.
 3. **The real load** — `TAI_CONTINUE` ([main.c](../vitals-boot/main.c)), as the process asked. The
-   browser's process sees its files through a view of its own, without `ux0:`, so there it fails
+   browser's process sees its files through a view of its own, without `ur0:`, so there it fails
    (`0x80010013`, no such device; naming the process instead of the caller fails the same way).
    The kernel then loads vitals' engine with its own call, `ksceKernelLoadModuleForPid`, as it loads
    the provider (`load_engine_for_process`; logged as `vitals-boot: browser engine: kernel load for
@@ -107,9 +107,9 @@ for the queued module, through `inject_target`
 1. **One injection per process at a time**, in a 4 KiB lookup workspace.
 2. **Not already there** — `ScePsp2Compat` must be found in the process, and the module `vitals`
    must not be ([tls13_loader.c](../vitals-boot/tls13_loader.c)).
-3. **The provider to load** — always `ux0:data/vitals/system/vitals.suprx`
+3. **The provider to load** — always `ur0:data/vitals/system/vitals.suprx`
    ([tls13_loader.c](../vitals-boot/tls13_loader.c)).
-4. **The module's hash** — `ux0:data/vitals/system/ScePsp2Compat.suprx`, the file the process loaded,
+4. **The module's hash** — `ur0:data/vitals/system/ScePsp2Compat.suprx`, the file the process loaded,
    hashed in the system's view (`target_matches`, [tls13_loader.c](../vitals-boot/tls13_loader.c)).
 5. **Still the right module** — the module ID handed over must be `ScePsp2Compat`.
 6. **Start arguments** — `VitalsBrowserStartArgs` (magic `0x42544C53`, version 1, the module's ID;

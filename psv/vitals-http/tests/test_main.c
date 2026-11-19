@@ -1397,7 +1397,7 @@ static void test_console_profile(int template_)
     sceHttpDeleteConnection(connection);
 }
 
-/* ux0:data/vitals/redirects.txt: a host that doesn't exist, sent to another */
+/* ur0:data/vitals/redirects.txt: a host that doesn't exist, sent to another */
 static void test_host_redirects(int template_)
 {
     char body[64], old[64];
@@ -1756,7 +1756,7 @@ int main(int argc, char **argv)
     printf("pool: peak %u of %u bytes\n", stats.maxInuseSize, stats.poolSize);
     CHECK_EQ(sceHttpTerm(), 0);
 
-    /* ux0:data/vitals/useragent.txt, read on the next sceHttpInit */
+    /* ur0:data/vitals/useragent.txt, read on the next sceHttpInit */
     printf("user agent file\n");
     vh_test_useragent_path = argv[8];
     CHECK_EQ(sceHttpInit(1024 * 1024), 0);

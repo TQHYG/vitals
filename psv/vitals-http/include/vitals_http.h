@@ -17,7 +17,7 @@ extern "C" {
 #endif
 
 /* The URL the request goes to, as vitals-http sends it: after the host redirects
- * (ux0:data/vitals/redirects.txt), so a redirected request names the new host. Into url (size
+ * (ur0:data/vitals/redirects.txt), so a redirected request names the new host. Into url (size
  * bytes, NUL-terminated), and its size with the NUL into *required; with no url or too small a one
  * only *required, and SCE_HTTP_ERROR_OUT_OF_SIZE. 0, or SCE_HTTP_ERROR_BEFORE_INIT,
  * SCE_HTTP_ERROR_INVALID_ID, SCE_HTTP_ERROR_INVALID_VALUE (no required) */

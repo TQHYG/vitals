@@ -24,7 +24,7 @@
 #define VH_METHOD_MAX 16u
 /* The firmware version the User-Agent names: the latest, whatever the console runs */
 #define VH_USER_AGENT_VERSION "3.74"
-/* The longest User-Agent suffix ux0:data/vitals/useragent.txt can give, with its NUL */
+/* The longest User-Agent suffix ur0:data/vitals/useragent.txt can give, with its NUL */
 #define VH_SUFFIX_MAX 128u
 
 #define VH_ERROR_UNSUPPORTED ((int)SCE_HTTP_ERROR_UNKNOWN)

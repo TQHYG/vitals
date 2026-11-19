@@ -1,7 +1,7 @@
 #ifndef VITALS_APP_TEST_VITA_FILES_H
 #define VITALS_APP_TEST_VITA_FILES_H
 
-/* The Vita's drives (ur0:, ux0:, vs0:, app0:) as folders under one host directory */
+/* The Vita's drives (ur0:, ur0:, vs0:, app0:) as folders under one host directory */
 void vita_files_root(const char *directory);
 /* The host path of a Vita path */
 const char *vita_files_path(const char *vita_path);

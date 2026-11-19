@@ -17,7 +17,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-/* ---- the platform's files, under root: "ux0:data/x" and "/dev_hdd0/x" become <root>/ux0/data/x
+/* ---- the platform's files, under root: "ur0:data/x" and "/dev_hdd0/x" become <root>/ur0/data/x
  * and <root>/dev_hdd0/x ---- */
 
 static char root[256];

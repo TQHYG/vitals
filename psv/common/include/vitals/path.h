@@ -4,9 +4,9 @@
 #include <stddef.h>
 
 #define VITALS_BROWSER_PROVIDER_FILENAME "vitals.suprx"
-/* vitals' modules, in ux0:data/vitals as the PS3's are in /dev_hdd0/vitals/system: the kernel plugin
+/* vitals' modules, in ur0:data/vitals as the PS3's are in /dev_hdd0/vitals/system: the kernel plugin
  * loads them in Sony's place, and the module manager reads them past every app's sandbox */
-#define VITALS_SYSTEM_DIRECTORY "ux0:data/vitals/system"
+#define VITALS_SYSTEM_DIRECTORY "ur0:data/vitals/system"
 /* The browser provider, which the kernel plugin injects after vitals' browser engine starts */
 #define VITALS_BROWSER_PROVIDER_BOOT_PATH VITALS_SYSTEM_DIRECTORY "/" VITALS_BROWSER_PROVIDER_FILENAME
 /* vitals-http, the system's libhttp once installed */

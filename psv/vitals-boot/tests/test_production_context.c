@@ -67,7 +67,7 @@ int main(void) {
     stack_skip = 0;
     assert(name_target_calls == 3 && name_provider_calls == 3);
     /* Nothing is opened in the process's own view: the engine and the provider are both in the
-     * system's, in ux0:data/vitals/system */
+     * system's, in ur0:data/vitals/system */
     assert(namespace_provider_opens == 0 && namespace_hash_opens == 0 && global_provider_stats == 1);
     reset();
     test_extended_stack_contract();

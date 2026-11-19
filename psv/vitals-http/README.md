@@ -26,7 +26,7 @@ make test       # host tests (needs VITASDK for <psp2/net/http.h>; skipped witho
 ```
 
 `USER_AGENT` (`libhttp/3.74 (PS Vita)` by default) sets what follows each app's own User-Agent
-when there is no `ux0:data/vitals/useragent.txt`, e.g. `make USER_AGENT="libhttp/3.74 (PS Vita) MyFork/1.0"`.
+when there is no `ur0:data/vitals/useragent.txt`, e.g. `make USER_AGENT="libhttp/3.74 (PS Vita) MyFork/1.0"`.
 `TLS_HEAP_KIB` (64 by default) sets the small heap for what this library keeps of TLS (each
 connection's state, the app's `sceHttpsLoadCert` certificates), one memory block per process, apart
 from the pool the app gives `sceHttpInit`. The connections themselves are in libssl's pool.
@@ -43,8 +43,8 @@ vitals-ssl is built first (`make` at the top does this), since this links its st
 | [src/cookie.c](src/cookie.c) | the cookie jar (RFC 6265), export and import |
 | [src/inflate.c](src/inflate.c) | gzip bodies, with zlib |
 | [src/async.c](src/async.c) | non-blocking requests (a worker thread per call) and the epoll API |
-| [src/redirect.c](src/redirect.c) | the host redirect list, `ux0:data/vitals/redirects.txt` |
-| [src/useragent.c](src/useragent.c) | the User-Agent suffix, `ux0:data/vitals/useragent.txt` |
+| [src/redirect.c](src/redirect.c) | the host redirect list, `ur0:data/vitals/redirects.txt` |
+| [src/useragent.c](src/useragent.c) | the User-Agent suffix, `ur0:data/vitals/useragent.txt` |
 | [src/private.c](src/private.c) | the 23 exports nothing names, as Sony's code does them |
 | [src/md5.c](src/md5.c) | MD5 (RFC 1321), for Digest authentication |
 | [src/tls.c](src/tls.c) | TLS 1.2 and 1.3 over a connection, through the libssl module, and `sceHttpsLoadCert` |
@@ -90,10 +90,10 @@ with the reason logged with `DEBUG=1`.
 
 ## Host redirects
 
-The pairs in `ux0:data/vitals/redirects.txt` (`from-host to-host` per line, as earlier versions
+The pairs in `ur0:data/vitals/redirects.txt` (`from-host to-host` per line, as earlier versions
 read them) are applied to the host a connection is made with: `sceHttpCreateConnection`'s host
 name, and the host in a URL passed to `sceHttpCreateConnectionWithURL`, `sceHttpCreateRequestWithURL`
-or `sceHttpCreateRequest2WithURL`. Games can't open `ux0:data`, so the list is read through the
+or `sceHttpCreateRequest2WithURL`. Games can't open `ur0:data`, so the list is read through the
 kernel plugin's `vitals_redirects_read`, which means building it needs `../vitals-boot` built
 first. It is read once per `sceHttpInit`, on the first connection or request, and kept in the
 pool until `sceHttpTerm`. With `DEBUG=1`, the number of rules and each rewrite are logged.
@@ -113,7 +113,7 @@ official ones the game's timeouts were made for.
 ## User-Agent suffix
 
 A template's User-Agent is the app's own followed by `libhttp/3.74 (PS Vita)`, or by the first
-line of `ux0:data/vitals/useragent.txt` that isn't empty or a `#` comment (trimmed, at most 127
+line of `ur0:data/vitals/useragent.txt` that isn't empty or a `#` comment (trimmed, at most 127
 printable ASCII characters; anything else and the default is kept). Like the redirect list, it is
 read through the kernel plugin (`vitals_useragent_read`), once per `sceHttpInit`.
 

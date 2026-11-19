@@ -11,14 +11,14 @@
 #define INVALID ((int)0x80010016)
 
 int syscall_depth;
-static const char *file_text, *file_path = "ux0:data/vitals/redirects.txt";
+static const char *file_text, *file_path = "ur0:data/vitals/redirects.txt";
 static int read_error, copy_error, opens, closes;
 static SceSize largest_read;
 
 /* The certificate store's parts, when ca_texts is set: Sony's, Mozilla's and the user's (NULL when
  * missing); each is opened as FD + 1 + its number */
-static const char *const ca_paths[] = {"ux0:data/vitals/system/sony-certs.pem",
-    "ux0:data/vitals/system/mozilla-certs.pem", "ux0:data/vitals/custom-certs.pem"};
+static const char *const ca_paths[] = {"ur0:data/vitals/system/sony-certs.pem",
+    "ur0:data/vitals/system/mozilla-certs.pem", "ur0:data/vitals/custom-certs.pem"};
 static const char *ca_texts[3];
 static int ca_mode, ca_open_parts, ca_stat_error, ca_open_error;
 /* What Getstat says a part's size is, when not strlen (a file rewritten meanwhile) */
@@ -159,17 +159,17 @@ static void test_errors(void) {
 /* The User-Agent suffix comes from its own file, from its start */
 static void test_useragent(void) {
     char buffer[64];
-    file_path = "ux0:data/vitals/useragent.txt";
+    file_path = "ur0:data/vitals/useragent.txt";
     reset("Custom/1.0 (Vita)\n");
     assert(vitals_useragent_read(buffer, sizeof(buffer)) == 18 && memcmp(buffer, "Custom/1.0 (Vita)\n", 18) == 0);
     reset(NULL);
     assert(vitals_useragent_read(buffer, sizeof(buffer)) == NOT_FOUND);
     assert(vitals_useragent_read(NULL, 16) == INVALID);
     check_state_restored();
-    file_path = "ux0:data/vitals/redirects.txt";
+    file_path = "ur0:data/vitals/redirects.txt";
 }
 
-/* The certificate store: in ux0:data/vitals/system, a whole request copied in one call with one open
+/* The certificate store: in ur0:data/vitals/system, a whole request copied in one call with one open
  * (a chunk at a time), cut at VITALS_CA_READ_MAX, from any offset, the end as 0 */
 static void ca_reset(const char *sony, const char *mozilla, const char *custom) {
     reset("");

@@ -2,9 +2,9 @@
 #define VITALS_LOG_FILE_H
 
 /* The debug output's file (the app's Options, Logs: File), which only the kernel can write for every
- * process: ux0:data/vitals/logs/vitals.log, the last boot's as vitals.log.old. Lines from the hooks
+ * process: ur0:data/vitals/logs/vitals.log, the last boot's as vitals.log.old. Lines from the hooks
  * and from the modules' system call wait in a ring, and a thread of its own writes them, so no hook
- * ever waits on a file. Until ux0: is there and the choice can be read, lines go to the debug console
+ * ever waits on a file. Until ur0: is there and the choice can be read, lines go to the debug console
  * too; with File chosen, only to the file; else only to the console. Debug builds only */
 
 #define VITALS_LOG_LINE_MAX 256u

@@ -160,7 +160,7 @@ int vh_platform_system_proxy(char *host, size_t capacity, unsigned short *port)
     return 1;
 }
 
-/* Through the kernel plugin: games may not open ux0:data themselves */
+/* Through the kernel plugin: games may not open ur0:data themselves */
 int vh_platform_redirects_read(unsigned int offset, void *buffer, unsigned int size)
 {
     return vitals_redirects_read(offset, buffer, size);
@@ -518,7 +518,7 @@ int vh_platform_vitals_ssl(void)
         info.size = sizeof(info);
         if (sceKernelGetModuleInfo(modules[i], &info) < 0 || strcmp(info.module_name, "SceLibSsl") != 0)
             continue;
-        /* ux0:data/vitals/system/libssl.suprx, however the device is written */
+        /* ur0:data/vitals/system/libssl.suprx, however the device is written */
         info.path[sizeof(info.path) - 1] = '\0';
         found = strstr(info.path, "data/vitals/system/libssl.suprx") != NULL ? 1 : -1;
         VITALS_LOG("libssl %s: %s", found > 0 ? "vitals-ssl" : "Sony's", info.path);

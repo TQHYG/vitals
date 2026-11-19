@@ -14,7 +14,7 @@
 # Every debug level of the providers and redirect is built and packaged; the app switches between
 # them
 # Every CMake build also writes compile_commands.json, which .vscode uses for code navigation
-#   make upload-app         builds the app and puts its VPK in the Vita's ux0:data/vitals/, for
+#   make upload-app         builds the app and puts its VPK in the Vita's ur0:data/vitals/, for
 #                           VitaShell to install (tools/vita_comms.py)
 #   make plugin|ssl|http|browser|app [DEBUG=N]   one module (the PS3's names), with what it links first
 #   make pull               pulls the newest published image (vitasdk/vitasdk:latest)
